@@ -59,6 +59,9 @@ export interface RedocOptions {
 
   /** Optional CSS to overwrite the default CSS with */
   css?: string;
+
+  /** If set, a version selector will show in the side menu. */
+  apiVersions?: { name: string; href: string; active: boolean }[];
 }
 
 export interface LogoOptions {

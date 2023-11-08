@@ -21,6 +21,15 @@
   </style>
 
   <style>
+    #version-selector {
+      margin: 0 20px;
+      padding: 4px 8px;
+      border-radius: 3px;
+      border-color: #b4b4b4;
+    }
+  </style>
+
+  <style>
     {{{ data.css }}}
   </style>
 </head>
@@ -31,8 +40,29 @@
   <script src="https://cdn.jsdelivr.net/npm/redoc@{{data.redocVersion}}/bundles/redoc.standalone.js"> </script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/redoc-try-it-out/dist/try-it-out.min.js"></script>
   <script>
+    function waitForElm(selector) {
+      return new Promise(resolve => {
+          if (document.querySelector(selector)) {
+              return resolve(document.querySelector(selector));
+          }
+
+          const observer = new MutationObserver(mutations => {
+              if (document.querySelector(selector)) {
+                  observer.disconnect();
+                  resolve(document.querySelector(selector));
+              }
+          });
+
+          observer.observe(document.body, {
+              childList: true,
+              subtree: true
+          });
+      });
+    }
+
     let themeJSON = '{{{ toJSON data.theme }}}';
     if (themeJSON === '') { themeJSON = undefined }
+
     RedocTryItOut.init(
       '{{ data.docUrl }}',
       {
@@ -45,6 +75,37 @@
       },
       document.getElementById("redoc_container")
     );
+
+    const versions = '{{{ toJSON data.apiVersions }}}';
+    const versionList = JSON.parse(versions === '' ? [] : versions);
+
+    waitForElm('div[role="search"]').then(searchBar => {
+      if (versionList.length > 0) {
+        const selector = document.createElement('select');
+        selector.id = 'version-selector';
+
+        versionList.forEach((version, index) => {
+          const versionOption = document.createElement('option');
+          versionOption.value = version.name;
+          versionOption.selected = version.active ? 'selected' : ''; 
+          
+          if (versionList.length - 1 === index) {
+            versionOption.innerText = `${version.name} - latest`;
+          } else {
+            versionOption.innerText = version.name;
+          }
+          
+          selector.appendChild(versionOption);
+        })
+
+        selector.onchange = function() {
+          const activeItem = versionList.find(x => x.name === this.value);
+          document.location.href = activeItem?.href;
+        }
+
+        searchBar.parentNode.insertBefore(selector, searchBar);
+      }
+    })
   </script>
 </body>
 
