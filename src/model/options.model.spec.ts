@@ -8,6 +8,7 @@ describe('options.models.ts', () => {
   it('should work for a swagger document without document.info', async () => {
     const module = await Test.createTestingModule({}).compile();
     const app = module.createNestApplication();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const swaggerDoc = SwaggerModule.createDocument(app, {} as any);
     expect(schema(swaggerDoc)).toBeTruthy();
   });

@@ -26,17 +26,17 @@ describe('redoc-module', () => {
 
     it('should run the setup (non-normalized path)', async () => {
       expect(RedocModule.setup('some/path', app, swagger, {})).resolves.toBe(
-        undefined
+        undefined,
       );
     });
     it('should run the setup (normalized path)', async () => {
       expect(RedocModule.setup('/some/path', app, swagger, {})).resolves.toBe(
-        undefined
+        undefined,
       );
     });
     it('should run the setup (normalized path 2)', async () => {
       expect(RedocModule.setup('/some/path/', app, swagger, {})).resolves.toBe(
-        undefined
+        undefined,
       );
     });
     it('shoudld be fine with the setup with logo options', async () => {
@@ -45,7 +45,7 @@ describe('redoc-module', () => {
           logo: {
             url: 'http://localhost:3333/test.png',
           },
-        })
+        }),
       ).resolves.toBe(undefined);
     });
     it('should server the documentation', async () => {
@@ -90,6 +90,7 @@ describe('redoc-module', () => {
       app = module.createNestApplication({
         initHttpServer: jest.fn(),
         getHttpServer: jest.fn(),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
       const options = new DocumentBuilder()
         .setDescription('Test swagger Doc')

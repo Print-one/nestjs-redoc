@@ -21,14 +21,14 @@ export class RedocModule {
     path: string,
     app: INestApplication,
     document: OpenAPIObject,
-    options: RedocOptions
+    options: RedocOptions,
   ): Promise<void> {
     // Validate options object
     try {
       const _options = await this.validateOptionsObject(options, document);
       const redocDocument = this.addVendorExtensions(
         _options,
-        <RedocDocument>document
+        <RedocDocument>document,
       );
       const httpAdapter: HttpServer = app.getHttpAdapter();
       if (
@@ -42,7 +42,7 @@ export class RedocModule {
         path,
         <NestExpressApplication>app,
         redocDocument,
-        _options
+        _options,
       );
     } catch (error) {
       throw error;
@@ -58,7 +58,7 @@ export class RedocModule {
 
   private static async validateOptionsObject(
     options: RedocOptions,
-    document: OpenAPIObject
+    document: OpenAPIObject,
   ): Promise<RedocOptions> {
     try {
       return schema(document).validateAsync(options) as RedocOptions;
@@ -79,7 +79,7 @@ export class RedocModule {
     path: string,
     app: NestExpressApplication,
     document: RedocDocument,
-    options: RedocOptions
+    options: RedocOptions,
   ) {
     const httpAdapter = app.getHttpAdapter();
     // Normalize URL path to use
@@ -92,13 +92,22 @@ export class RedocModule {
     // create helper to convert metadata to JSON
     const hbs = handlebars.create({
       helpers: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         toJSON: function (object: any) {
           return JSON.stringify(object);
         },
       },
     });
     // spread redoc options
-    const { title, favicon, theme, redocVersion, css, apiVersions, ...otherOptions } = options;
+    const {
+      title,
+      favicon,
+      theme,
+      redocVersion,
+      css,
+      apiVersions,
+      ...otherOptions
+    } = options;
     // create render object
     const renderData = {
       data: {
@@ -121,7 +130,7 @@ export class RedocModule {
       __dirname,
       '..',
       'views',
-      'redoc.handlebars'
+      'redoc.handlebars',
     );
     // get handlebars rendered HTML
     const redocHTML = await hbs.render(redocFilePath, renderData);
@@ -131,7 +140,7 @@ export class RedocModule {
         // Content-Security-Policy: worker-src 'self' blob:
         res.setHeader(
           'Content-Security-Policy',
-          "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; child-src * 'unsafe-inline' 'unsafe-eval' blob:; worker-src * 'unsafe-inline' 'unsafe-eval' blob:; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"
+          "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; child-src * 'unsafe-inline' 'unsafe-eval' blob:; worker-src * 'unsafe-inline' 'unsafe-eval' blob:; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';",
         );
         // whoosh
         res.send(redocHTML);
@@ -143,7 +152,7 @@ export class RedocModule {
           res,
           () => {
             sendPage();
-          }
+          },
         );
       } else {
         sendPage();
@@ -171,7 +180,7 @@ export class RedocModule {
    */
   private static addVendorExtensions(
     options: RedocOptions,
-    document: RedocDocument
+    document: RedocDocument,
   ): RedocDocument {
     if (options.logo) {
       const logoOption: Partial<LogoOptions> = { ...options.logo };

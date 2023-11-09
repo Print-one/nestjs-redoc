@@ -42,9 +42,9 @@ export const schema = (document: OpenAPIObject) =>
         Joi.object({
           name: Joi.string(),
           tags: Joi.array().items(Joi.string()),
-        })
+        }),
       )
       .optional(),
     css: Joi.string().optional(),
-    apiVersions: Joi.optional()
+    apiVersions: Joi.optional(),
   });

@@ -8,6 +8,7 @@ export interface RedocOptions {
   /** Logo Options */
   logo?: LogoOptions;
   /** Theme options */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   theme?: any;
   /** If set, the spec is considered untrusted and all HTML/markdown is sanitized to prevent XSS, by default is false */
   untrustedSpec?: boolean;
