@@ -7,6 +7,9 @@
   "main": "dist/index.js",
   "private": false,
   "license": "MIT",
+  "engines": {
+    "node": ">=18 <=20"
+  },
   "scripts": {
     "setup": "npm run build",
     "prebuild": "rimraf ./dist",
