@@ -27,6 +27,15 @@
       border-radius: 3px;
       border-color: #b4b4b4;
     }
+
+    label.early-access {
+      font-size: 12px;
+      color: black;
+      background-color: #7ece1b;
+      padding: 2px 3px;
+      border-radius: 4px;
+      margin-left: .5rem;
+    }
   </style>
 
   <style>
@@ -79,6 +88,7 @@
     const versions = '{{{ toJSON data.apiVersions }}}';
     const versionList = JSON.parse(versions === '' ? [] : versions);
 
+    // Version selector
     waitForElm('div[role="search"]').then(searchBar => {
       if (versionList.length > 0) {
         const selector = document.createElement('select');
@@ -106,6 +116,49 @@
         searchBar.parentNode.insertBefore(selector, searchBar);
       }
     })
+
+    waitForElm('ul[role="navigation"]').then(() => {
+      // Apply tag versions
+      fetch('{{ data.docUrl }}').then(x => x.json()).then(swagger => {
+        
+        // Tag Groups
+        const tags = swagger.tags;
+        const earlyAccessTags = tags.filter(x => x['x-earlyAccess']).map(x => x.name);
+
+        const createEarlyAccessLabel = () => {
+          const label = document.createElement('label');
+          label.innerText = 'Early Access';
+          label.classList.add('early-access');
+          return label;
+        }
+
+        const tagElements = earlyAccessTags.map(tag => document.querySelector(`li[data-item-id="tag/${tag}"]`));
+
+        tagElements.forEach(function (tag) {
+          const textSpan = tag.querySelector('label span[title]');
+          textSpan.appendChild(createEarlyAccessLabel());
+        });
+        
+        // Endpoints
+        const routesWithEarlyAccess = [];
+        Object.values(swagger.paths).forEach(x => Object.values(x).forEach(y => {
+          if (y['x-earlyAccess'] === true) {
+            routesWithEarlyAccess.push({
+              operationId: y.operationId,
+              tag: y.tags[0]
+            })
+          }
+        }));
+
+        const routeElements = routesWithEarlyAccess.map(route => document.querySelector(`li[data-item-id="tag/${route.tag}"] ul li[data-item-id="operation/${route.operationId}"]`));
+
+        routeElements.forEach(function (tag) {
+          const textSpan = tag.querySelector('label span:nth-child(2)');
+          textSpan.appendChild(createEarlyAccessLabel());
+        });
+      });
+    })
+    
   </script>
 </body>
 
