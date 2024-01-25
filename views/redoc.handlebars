@@ -133,7 +133,6 @@
         }
 
         const tagElements = earlyAccessTags.map(tag => document.querySelector(`li[data-item-id="tag/${tag}"]`));
-        console.log(tagElements, earlyAccessTags);
 
         tagElements.forEach(function (tag) {
           const textSpan = tag.querySelector('label span[title]');
@@ -157,8 +156,6 @@
           const textSpan = tag.querySelector('label span:nth-child(2)');
           textSpan.appendChild(createEarlyAccessLabel());
         });
-
-        console.log(routeElements);
       });
     })
     
