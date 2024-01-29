@@ -159,6 +159,12 @@
       });
     })
     
+    // Replace links with in api-info with target="_blank"
+    waitForElm('div.api-info').then(apiInfo => {
+      apiInfo.querySelectorAll('a').forEach(el => {
+        el.target = '_blank';
+      });
+    });
   </script>
 </body>
 
