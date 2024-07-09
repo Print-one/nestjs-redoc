@@ -80,7 +80,7 @@
     if (themeJSON === '') { themeJSON = undefined }
 
     RedocTryItOut.init(
-      '{{ data.docUrl }}',
+      '{{ data.docUrl }}'.replace('swagger.json', 'swagger-legacy.json'),
       {
         ...JSON.parse('{{{ toJSON data.options }}}'),
         ...(themeJSON && {
