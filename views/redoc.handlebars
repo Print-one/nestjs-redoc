@@ -172,6 +172,19 @@
         el.target = '_blank';
       });
     });
+
+    waitForElm('a[download]').then(downloadButton => {
+      downloadButton.href = downloadButton.href.replace('-legacy.json', '.json');
+    })
+
+    waitForElm('.menu-content').then(menu => {
+      const banner = document.createElement('div');
+      banner.style.background = '#fafafa';
+      banner.style.height = '1rem';
+      banner.style.display = 'block';
+
+      menu.insertBefore(banner, menu.firstChild);
+    })
   </script>
 </body>
 
