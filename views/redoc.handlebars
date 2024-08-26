@@ -132,6 +132,8 @@
         const tags = swagger.tags;
         const earlyAccessTags = tags.filter(x => x['x-earlyAccess']).map(x => x.name);
 
+        console.debug(earlyAccessTags);
+
         const createEarlyAccessLabel = () => {
           const label = document.createElement('label');
           label.innerText = 'Early Access';
@@ -139,9 +141,10 @@
           return label;
         }
 
-        const tagElements = earlyAccessTags.map(tag => document.querySelector(`li[data-item-id="tag/${tag}"]`));
+        const tagElements = earlyAccessTags.map(tag => document.querySelector(`li[data-item-id="tag/${tag.replaceAll(' ', '-').replaceAll('/','')}"]`));
 
         tagElements.forEach(function (tag) {
+          if (!tag) return;
           const textSpan = tag.querySelector('label span[title]');
           textSpan.appendChild(createEarlyAccessLabel());
         });
