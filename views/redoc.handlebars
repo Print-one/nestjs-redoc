@@ -104,14 +104,14 @@
         versionList.forEach((version, index) => {
           const versionOption = document.createElement('option');
           versionOption.value = version.name;
-          versionOption.selected = version.active ? 'selected' : ''; 
-          
+          versionOption.selected = version.active ? 'selected' : '';
+
           if (versionList.length - 1 === index) {
             versionOption.innerText = `${version.name} - latest`;
           } else {
             versionOption.innerText = version.name;
           }
-          
+
           selector.appendChild(versionOption);
         })
 
@@ -127,7 +127,7 @@
     waitForElm('ul[role="navigation"]').then(() => {
       // Apply tag versions
       fetch('{{ data.docUrl }}').then(x => x.json()).then(swagger => {
-        
+
         // Tag Groups
         const tags = swagger.tags;
         const earlyAccessTags = tags.filter(x => x['x-earlyAccess']).map(x => x.name);
@@ -145,7 +145,7 @@
           const textSpan = tag.querySelector('label span[title]');
           textSpan.appendChild(createEarlyAccessLabel());
         });
-        
+
         // Endpoints
         const routesWithEarlyAccess = [];
         Object.values(swagger.paths).forEach(x => Object.values(x).forEach(y => {
@@ -165,7 +165,15 @@
         });
       });
     })
-    
+
+    // Fix nav items names
+    waitForElm('ul[role="navigation"]').then(() => {
+      const navItems = document.querySelectorAll('ul[role="navigation"] li li label span, div.api-content h2');
+      navItems.forEach(item => {
+        item.innerHTML = item.innerHTML.replace(/[^/><]+\/([^/]+$)/, '$1');
+      });
+    })
+
     // Replace links with in api-info with target="_blank"
     waitForElm('div.api-info').then(apiInfo => {
       apiInfo.querySelectorAll('a').forEach(el => {
