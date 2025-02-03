@@ -34,8 +34,7 @@ export const schema = (document: OpenAPIObject) =>
     docName: Joi.string().optional().default('swagger'),
     auth: {
       enabled: Joi.boolean().optional().default(false),
-      user: Joi.string().default('admin'),
-      password: Joi.string().default('123'),
+      challenge: Joi.func().optional(),
     },
     tagGroups: Joi.array()
       .items(
@@ -47,4 +46,5 @@ export const schema = (document: OpenAPIObject) =>
       .optional(),
     css: Joi.string().optional(),
     apiVersions: Joi.optional(),
+    admin: Joi.boolean().optional(),
   });

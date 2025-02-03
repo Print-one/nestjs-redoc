@@ -80,8 +80,13 @@
     let themeJSON = '{{{ toJSON data.theme }}}';
     if (themeJSON === '') { themeJSON = undefined }
 
+    let adminJson = '{{{ toJSON data.admin }}}';
+    const admin = adminJson === '' ? false : JSON.parse(adminJson);
+
+    let file = 'swagger-legacy.json';
+
     RedocTryItOut.init(
-      '{{ data.docUrl }}'.replace('swagger.json', 'swagger-legacy.json'),
+      '{{ data.docUrl }}'.replace('swagger.json', file),
       {
         ...JSON.parse('{{{ toJSON data.options }}}'),
         ...(themeJSON && {
@@ -132,8 +137,6 @@
         // Tag Groups
         const tags = swagger.tags;
         const earlyAccessTags = tags.filter(x => x['x-earlyAccess']).map(x => x.name);
-
-        console.debug(earlyAccessTags);
 
         const createEarlyAccessLabel = () => {
           const label = document.createElement('label');

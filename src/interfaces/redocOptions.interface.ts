@@ -1,3 +1,5 @@
+import { Request, Response } from 'express';
+
 export interface RedocOptions {
   /** Version of ReDoc to use (e.g. next, latest, 2.0.0-rc.50), by default is latest */
   redocVersion?: string;
@@ -47,10 +49,8 @@ export interface RedocOptions {
   auth?: {
     // Default value is false
     enabled: boolean;
-    // If auth is enabled but no user is provided the default value is "admin"
-    user: string;
-    // If auth is enabled but no password is provided the default value is "123"
-    password: string;
+    // The challenge to check if the request is authenticated
+    challenge: (req: Request, res: Response) => Promise<boolean>;
   };
 
   /** Vendor extensions */
@@ -63,6 +63,9 @@ export interface RedocOptions {
 
   /** If set, a version selector will show in the side menu. */
   apiVersions?: { name: string; href: string; active: boolean }[];
+
+  /** If set, the admin version of the API will be served */
+  admin?: boolean;
 }
 
 export interface LogoOptions {

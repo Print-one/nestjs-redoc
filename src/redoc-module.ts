@@ -106,6 +106,7 @@ export class RedocModule {
       redocVersion,
       css,
       apiVersions,
+      admin,
       ...otherOptions
     } = options;
     // create render object
@@ -117,6 +118,7 @@ export class RedocModule {
         redocVersion,
         css,
         apiVersions,
+        admin,
         options: otherOptions,
         ...(theme && {
           theme: {
@@ -146,14 +148,12 @@ export class RedocModule {
         res.send(redocHTML);
       };
       if (options.auth?.enabled) {
-        const { user, password } = options.auth;
-        expressAuth({ users: { [user]: password }, challenge: true })(
-          req,
-          res,
-          () => {
+        const { challenge } = options.auth;
+        challenge(req, res).then((isAuthenticated) => {
+          if (isAuthenticated) {
             sendPage();
-          },
-        );
+          }
+        });
       } else {
         sendPage();
       }
