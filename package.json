@@ -1,6 +1,6 @@
 {
   "name": "@print-one/nestjs-redoc",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "NestJS ReDoc frontend",
   "repository": "https://github.com/Print-one/nestjs-redoc/",
   "author": "Alfonso Reyes, PaulRill00",
