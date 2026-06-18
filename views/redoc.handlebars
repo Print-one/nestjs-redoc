@@ -55,7 +55,7 @@
   <!-- we provide is specification here -->
   <div id="redoc_container"></div>
   <script src="https://cdn.jsdelivr.net/npm/redoc@{{data.redocVersion}}/bundles/redoc.standalone.js"> </script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/redoc-try-it-out/dist/try-it-out.min.js"></script>
+  <script type="text/javascript" src="https://cdn.print.one/redoc-try-it-out.min.js"></script>
   <script>
     function waitForElm(selector) {
       return new Promise(resolve => {
@@ -130,7 +130,7 @@
       }
     })
 
-    waitForElm('ul[role="navigation"]').then(() => {
+    waitForElm('ul[role="menu"]').then(() => {
       // Apply tag versions
       fetch('{{ data.docUrl }}').then(x => x.json()).then(swagger => {
 
@@ -174,8 +174,8 @@
     })
 
     // Fix nav items names
-    waitForElm('ul[role="navigation"]').then(() => {
-      const navItems = document.querySelectorAll('ul[role="navigation"] li li label span, div.api-content h2');
+    waitForElm('ul[role="menu"]').then(() => {
+      const navItems = document.querySelectorAll('ul[role="menu"] li li label span, div.api-content h2');
       navItems.forEach(item => {
         item.innerHTML = item.innerHTML.replace(/[^/><]+\/([^/]+$)/, '$1');
       });
@@ -199,6 +199,10 @@
       banner.style.display = 'block';
 
       menu.insertBefore(banner, menu.firstChild);
+    })
+
+    waitForElm('.ccKipA').then(credits => {
+      credits.remove();
     })
   </script>
 </body>
