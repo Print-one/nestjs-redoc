@@ -36,13 +36,22 @@
       border-color: #b4b4b4;
     }
 
-    label.early-access {
+    label.early-access, label.premium-access {
       font-size: 12px;
-      color: black;
-      background-color: #7ece1b;
       padding: 2px 3px;
       border-radius: 4px;
       margin-left: .5rem;
+      white-space: no-wrap;
+    }
+
+    label.early-access {
+      background-color: #7ece1b;
+      color: black;
+    }
+
+    label.premium-access {
+      background-color: #8f1bce;
+      color: white;
     }
   </style>
 
@@ -115,7 +124,7 @@
           if (versionList.length - 1 === index) {
             versionOption.innerText = `${version.name} - latest`;
           } else {
-            versionOption.innerText = version.name;
+            versionOption.innerText = `${version.name} - legacy`;
           }
 
           selector.appendChild(versionOption);
@@ -134,42 +143,27 @@
       // Apply tag versions
       fetch('{{ data.docUrl }}').then(x => x.json()).then(swagger => {
 
-        // Tag Groups
-        const tags = swagger.tags;
-        const earlyAccessTags = tags.filter(x => x['x-earlyAccess']).map(x => x.name);
+        const createLabels = (tag, labelName, className) => {
+          // Tag Groups
+          const tags = swagger.tags.filter(x => x[tag]).map(x => x.name);
 
-        const createEarlyAccessLabel = () => {
-          const label = document.createElement('label');
-          label.innerText = 'Early Access';
-          label.classList.add('early-access');
-          return label;
+          const createLabel = () => {
+            const label = document.createElement('label');
+            label.innerText = labelName;
+            label.classList.add(className);
+            return label;
+          }
+
+          const tagElements = tags.map(tag => document.querySelector(`li[data-item-id="tag/${tag.replaceAll(' ', '-').replaceAll('/','')}"]`));
+          tagElements.forEach(function (tag) {
+            if (!tag) return;
+            const textSpan = tag.querySelector('label span[title]');
+            textSpan.appendChild(createLabel());
+          });
         }
 
-        const tagElements = earlyAccessTags.map(tag => document.querySelector(`li[data-item-id="tag/${tag.replaceAll(' ', '-').replaceAll('/','')}"]`));
-
-        tagElements.forEach(function (tag) {
-          if (!tag) return;
-          const textSpan = tag.querySelector('label span[title]');
-          textSpan.appendChild(createEarlyAccessLabel());
-        });
-
-        // Endpoints
-        const routesWithEarlyAccess = [];
-        Object.values(swagger.paths).forEach(x => Object.values(x).forEach(y => {
-          if (y['x-earlyAccess'] === true) {
-            routesWithEarlyAccess.push({
-              operationId: y.operationId,
-              tag: y.tags[0]
-            })
-          }
-        }));
-
-        const routeElements = routesWithEarlyAccess.map(route => document.querySelector(`li[data-item-id="tag/${route.tag}"] ul li[data-item-id="operation/${route.operationId}"]`));
-
-        routeElements.forEach(function (tag) {
-          const textSpan = tag.querySelector('label span:nth-child(2)');
-          textSpan.appendChild(createEarlyAccessLabel());
-        });
+        createLabels('x-earlyAccess', 'Early Access', 'early-access');
+        createLabels('x-premiumAccess', 'Premium', 'premium-access');
       });
     })
 
